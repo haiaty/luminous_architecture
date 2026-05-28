@@ -5,14 +5,22 @@ const process = require("node:process");
 const path = require("node:path");
 
 const simpleServiceExample = require(path.resolve(process.cwd(), "src", "services", "simpleServiceExample.js"));
+const serviceWithoutFeaturesExample = require(path.resolve(process.cwd(), "src", "services", "serviceWithoutFeaturesExample.js"));
+
+
 
 async function main() {
 
+    let result = null;
+
     // Execute the service from the application boundary without leaking CLI details into /src.
-    const result = await simpleServiceExample();
+    result = await simpleServiceExample();
     console.log(JSON.stringify(result, null, 2));
 
-    
+    result = await serviceWithoutFeaturesExample();
+    console.log(JSON.stringify(result, null, 2));
+
+
 
 }
 
