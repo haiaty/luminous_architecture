@@ -176,7 +176,7 @@ module.exports = async function (payload) {
 
     const mediator = payload.mediator
     const operator = payload.operator;
-    const bic11 = payload.bic11;
+    const car = payload.car;
     const type = payload.type;
     const templateId = constants.template_ids[`${type}_SIGNATURE_COLLECTOR`];
 
@@ -191,7 +191,7 @@ module.exports = async function (payload) {
     // create institutionOperators adding the current operator
     const institutionOperatorsResult = await setUpInstitutionOperatorsOperation({
         mediator: mediator.identifier,
-        bic11: bic11,
+        car: car,
         operatorToAdd: operator.identifier
     });
 
@@ -204,7 +204,7 @@ module.exports = async function (payload) {
                 mediator: mediator.identifier,
                 alreadySigned: [mediator.identifier],
                 operators: institutionOperatorsResult.payload.operators,
-                institutionBic11: bic11,
+                car: car,
                 status: constants.request_statuses.REQUESTER_PENDING_SIGNATURE
             }
         }
@@ -266,12 +266,12 @@ const requestSubscriptionFeature = require(path.resolve(process.cwd(), "src", "f
 const setUpPartyOperation = require(path.resolve(process.cwd(), "src", "operations", "setUpParty"));
 
 /**
- * @param {string} bic e.g. "DEUTDEFFXXX"
+ * @param {string} car e.g. "skoda"
  * @param {string} email e.g. "user@example.com"
  *
  * @return {Promise<*>}
  */
-module.exports = async function (bic, email) {
+module.exports = async function (car, email) {
 
     // 1. first of all allocate party and store them
     const mediator = await setUpPartyOperation(constants.MEDIATOR);
@@ -281,7 +281,7 @@ module.exports = async function (bic, email) {
     // 2. make subscription
     const payload = {
         type: constants.SUBSCRIPTION,
-        bic11: bic,
+        car: car,
         mediator: mediator,
         operator: party
     };
@@ -510,7 +510,7 @@ Write executable specifications in plain text via the Gherkin grammar:
 ```gherkin
 # /tests/features/index.feature
   Scenario: html-to-pdf
-    Given the html file "/tests/fixtures/actide_test.html"
+    Given the html file "/tests/fixtures/my_test.html"
     When performing 1 POST "/createpdf" request
     Then a pdf file should be downloaded
     Then http response status code should be 200
@@ -674,7 +674,7 @@ const fastify = require("fastify");
 
 module.exports = async function (req, resp) {
     // accessing req and resp inside a service breaks isolation
-    const bic = req.body.bic;
+    const car = req.body.car;
     // ...
 };
 ```
